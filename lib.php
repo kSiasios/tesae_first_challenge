@@ -19,12 +19,26 @@ class Products
         $xmldata = simplexml_load_file($this->xml_file_path) or die("Failed to load");
         $xml_data = $xmldata->children();
 
-        foreach ($xml_data->PRODUCTS->PRODUCT as $key => $prod) {
-            
-            $this->print_html_of_one_product_line($prod);
-        
+        echo "<table class='products_table'>";
+        echo "<thead>";
+        echo "<tr>";
+
+        // PRINT OUT THE COLUMN HEADERS ACCORDING TO THE ATTRIBUTES NAME ON THE XML FILE 
+
+        foreach ($xml_data[1] as $record) {
+            foreach ($record as $key => $value) {
+                echo ("<th>" . $key . "</th>");
+            }
+            break;
         }
-        
+
+        echo "</tr>";
+        echo "</thead>";
+
+        foreach ($xml_data->PRODUCTS->PRODUCT as $key => $prod) {
+            $this->print_html_of_one_product_line($prod);
+        }
+        echo "</table>";
     }
 
     /**
@@ -32,8 +46,19 @@ class Products
      * @param mixed $prod It is the product object as retrieved from the xml file
      * @return void 
      */
-    private function print_html_of_one_product_line($prod){
+    private function print_html_of_one_product_line($prod)
+    {
         //TODO 2: Θα πρέπει να συμπληρώσουμε τη συνάρτηση ώστε να κάνει print τα tr με τα στοιχεία του ενός προϊόντος
-        //var_dump($prod);
+        echo "<tr>";
+
+        foreach ($prod as $key => $prod_attr) {
+            if (!strcmp($key, "BARCODE")) {
+                // if we have a barcode
+                echo "<td class='barcode'>" . $prod_attr . "</td>";
+                continue;
+            }
+            echo "<td>" . $prod_attr . "</td>";
+        }
+        echo "</tr>";
     }
 }
